@@ -1,0 +1,3 @@
+/sbin/ifconfig eth0 10.0.0.2 up
+/sbin/ifconfig eth0 hw ether 00:00:00:00:20:00
+

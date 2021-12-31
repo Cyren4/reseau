@@ -1,0 +1,21 @@
+ifconfig eth0 up
+touch /hostwd/$HOSTNAME.ready
+# Do not run tcpdump if we are in test mode
+if cat /proc/cmdline | grep -w test; then
+   exit
+fi
+
+/usr/sbin/tcpdump -e -t -n -c 1000 -U -l -w - arp | tee /hostlab/sniffer.cap | tcpdump -r - &
+
+{
+   while pidof tcpdump >& /dev/null; do
+      sleep 5
+   done
+   halt
+} &
+
+# Kill tcpdump if not enough packets have been received after 1 minute
+{
+   sleep 60m
+   killall tcpdump >& /dev/null
+} &
